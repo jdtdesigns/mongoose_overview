@@ -1,42 +1,15 @@
-const { MongoClient, ObjectId } = require('mongodb');
+const express = require('express');
+const app = express();
 
-const url = 'mongodb://127.0.0.1:27017';
-const client = new MongoClient(url);
+const PORT = process.env.PORT || 3333;
 
-client.connect()
-  .then(async () => {
-    console.log('db connected');
+const connection = require('./config/connection');
 
-    const db = client.db('first_day_db');
-    const uc = db.collection('users');
+app.get('/api/users', async (req, res) => {
+  const db = await connection;
+  const users = await db.collection('users').find().toArray();
 
-    try {
-      // const users = await uc.find().toArray();
+  res.json(users);
+});
 
-      // console.log(users);
-
-      // Create a user
-      // await uc.insertOne({
-      //   email: 'bob@test.com',
-      //   password: 'password123'
-      // });
-
-      // console.log('user inserted');
-
-      // Find one user by some property
-      const jd = await uc.findOne({
-        _id: new ObjectId('65c64b2d6939dcf969e8e511')
-      });
-
-      console.log(jd);
-
-    } catch (err) {
-      console.log(err);
-    }
-  });
-
-// class Person {
-
-// }
-
-// const jd = new Person();
+app.listen(PORT, () => console.log('Server started on port', PORT));
