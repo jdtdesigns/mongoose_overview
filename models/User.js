@@ -23,14 +23,13 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: [true, 'You must enter a password'],
-      minLength: [6, 'Your password must be at least 6 characters in length'],
-      select: false
+      minLength: [6, 'Your password must be at least 6 characters in length']
     }
   }
 );
 
 userSchema.pre('save', async function (next) {
-  if (this.isNew) {
+  if (this.isNew || this.isModified('password')) {
     this.password = await hash(this.password, 10);
   }
 
