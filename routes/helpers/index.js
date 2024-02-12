@@ -1,4 +1,6 @@
 function handleRouteError(err, res) {
+  console.log(err);
+
   if (err.code === 11000) {
     // Duplicate entry error
     return res.json({
