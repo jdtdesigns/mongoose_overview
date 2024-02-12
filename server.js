@@ -5,11 +5,17 @@ const PORT = process.env.PORT || 3333;
 
 const connection = require('./config/connection');
 
-app.get('/api/users', async (req, res) => {
-  const db = await connection;
-  const users = await db.collection('users').find().toArray();
+const { user_routes } = require('./routes/api');
 
-  res.json(users);
+// Middleware
+app.use(express.json());
+
+// Load Routes
+app.use('/api', [
+  user_routes
+]);
+
+
+connection.on('open', () => {
+  app.listen(PORT, () => console.log('Server started on port', PORT));
 });
-
-app.listen(PORT, () => console.log('Server started on port', PORT));
